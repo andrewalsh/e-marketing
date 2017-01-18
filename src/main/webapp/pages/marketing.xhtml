@@ -15,7 +15,7 @@
 	<ui:define name="conteudo">
 		<p:tabView>
 			<p:tab title="Envio de e-mails">
-				<h:form>
+				<h:form enctype="multipart/form-data">
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Assunto:"/>
 						<p:inputText/>
@@ -24,10 +24,11 @@
 						<p:inputTextarea ></p:inputTextarea>
 						
 						<p:outputLabel value="Imagem:"/>
-						<p:fileUpload label="Selecione..." uploadLabel="Carregar Imagem" cancelLabel="Cancelar"/>
+						<p:fileUpload label="Selecione..." uploadLabel="Carregar Imagem" cancelLabel="Cancelar"
+							mode="advanced" fileUploadListener="#{emailBean.upload}"/>
 					</h:panelGrid>
 					<h:panelGrid columns="5">
-						<p:commandButton value="Enviar Primeira Base" disabled="#{emailBean.btn1 eq true}"/>
+						<p:commandButton value="Enviar Primeira Base" actionListener="#{emailBean.eviarEmail}" disabled="#{emailBean.btn1 eq true}"/>
 						<p:commandButton value="Enviar Segunda Base" disabled="#{emailBean.btn2 eq true}"/>
 						<p:commandButton value="Enviar Terceira Base" disabled="#{emailBean.btn3 eq true}"/>
 						<p:commandButton value="Enviar Quarta Base" disabled="#{emailBean.btn4 eq true}"/>

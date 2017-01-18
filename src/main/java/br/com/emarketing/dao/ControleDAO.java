@@ -1,5 +1,7 @@
 package br.com.emarketing.dao;
 
+import java.util.Date;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -14,6 +16,7 @@ public class ControleDAO {
 		Transaction transaction = null;
 		try {
 			transaction = session.beginTransaction();
+			//controleDeEnvio.setDataEnvio(new Date());
 			session.save(controleDeEnvio);
 			transaction.commit();
 		} catch (RuntimeException e) {
