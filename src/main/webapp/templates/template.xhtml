@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<ui:insert name="metadata" />
+
+<h:head>
+	<title>e-marketing</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<h:outputStylesheet library="css" name="default.css" />
+</h:head>
+<body>
+	<div id="tudo">
+
+		<header class="cabecalho">
+
+			<p:outputLabel value="e-marketing"
+				styleClass="texto-cabecalho" />
+		</header>
+
+		<section class="principal">
+			<p:messages id="msg" showDetail="true" autoUpdate="true" closable="true" />
+			
+			<ui:insert name="conteudo" />
+		</section>
+	</div>
+	
+</body>
+</html>
