@@ -1,11 +1,13 @@
 package br.com.emarketing.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import br.com.emarketing.dao.BaseDAO;
 import br.com.emarketing.dao.ControleDAO;
 import br.com.emarketing.entity.ControleDeEnvio;
 import br.com.emarketing.entity.PrimeiraBase;
@@ -32,6 +34,7 @@ public class EmailBean implements Serializable{
 	private boolean btn3;
 	private boolean btn4;
 	private boolean btn5;
+	private String base;
 	
 	
 	public ControleDeEnvio getEnvio() {
@@ -109,7 +112,12 @@ public class EmailBean implements Serializable{
 	public void setBtn5(boolean btn5) {
 		this.btn5 = btn5;
 	}
-	
+	public String getBase() {
+		return base;
+	}
+	public void setBase(String base) {
+		this.base = base;
+	}
 	
 	
 	public void listarControle(){
@@ -122,37 +130,128 @@ public class EmailBean implements Serializable{
 		}
 	}
 	
+	public void eviarEmail(String base){
+		try {
+			ControleDAO dao = new ControleDAO();
+			this.base = base;
+			popularEnvio(this.base);
+			
+		} catch (RuntimeException e) {
+			// TODO: handle exception
+		}
+	}
+	
+	
+	private void carregarPrimeiraBase(){
+		try {
+			BaseDAO dao = new BaseDAO();
+			primeiraBase = dao.listrarPrimeiraBase();
+		} catch (RuntimeException e) {
+			FacesuUtil.msgErro("Ocorreu um erro ao carregar os e-mails da base! ERRO: [ "+e.getMessage()+" ]");
+		}
+	}
+	
+	private void carregarSegundaBase(){
+		try {
+			BaseDAO dao = new BaseDAO();
+			segundaBase = dao.listrarSegundaBase();
+		} catch (RuntimeException e) {
+			FacesuUtil.msgErro("Ocorreu um erro ao carregar os e-mails da base! ERRO: [ "+e.getMessage()+" ]");
+		}
+	}
+	
+	
+	private void carregarTerceiraBase(){
+		try {
+			BaseDAO dao = new BaseDAO();
+			terceiraBase = dao.listrarTerceiraBase();
+		} catch (RuntimeException e) {
+			FacesuUtil.msgErro("Ocorreu um erro ao carregar os e-mails da primeira base! ERRO: [ "+e.getMessage()+" ]");
+		}
+	}
+	
+	private void carregarQuartaBase(){
+		try {
+			BaseDAO dao = new BaseDAO();
+			quartaBase = dao.listrarQuartaBase();
+		} catch (RuntimeException e) {
+			FacesuUtil.msgErro("Ocorreu um erro ao carregar os e-mails da base! ERRO: [ "+e.getMessage()+" ]");
+		}
+	}
+	
+	private void carregarQuintaBase(){
+		try {
+			BaseDAO dao = new BaseDAO();
+			quintaBase = dao.listrarQuintaBase();
+		} catch (RuntimeException e) {
+			FacesuUtil.msgErro("Ocorreu um erro ao carregar os e-mails da base! ERRO: [ "+e.getMessage()+" ]");
+		}
+	}
+	
+	
+	private void popularEnvio(String base){
+		this.envio.setDataEnvio(new Date());
+		switch (base) {
+		case "b1":
+			this.envio.setNomeBase("PRIMEIRA");
+			break;
+			
+		case "b2":
+			this.envio.setNomeBase("SEGUNDA");
+			break;
+			
+		case "b3":
+			this.envio.setNomeBase("TERCEIRA");
+			break;
+		
+		case "b4":
+			this.envio.setNomeBase("QUARTA");
+			break;
+			
+		case "b5":
+			this.envio.setNomeBase("QUINTA");
+			break;
+		default:
+			break;
+		}
+	}
+	
 	private void habilitarEnvio(){
-		if(this.envio == null || this.envio.getNomeBase().equals(NomeBase.QUINTA_BASE)){
+		if(this.envio == null || this.envio.getNomeBase().equals("QUINTA")){
 			setBtn1(false);
 			setBtn2(true);
 			setBtn3(true);
 			setBtn4(true);
 			setBtn5(true);
-		}else if(this.envio.getNomeBase().equals(NomeBase.SEGUNDA_BASE)){
+			carregarPrimeiraBase();
+		}else if(this.envio.getNomeBase().equals("SEGUNDA")){
 			setBtn1(true);
 			setBtn2(false);
 			setBtn3(true);
 			setBtn4(true);
 			setBtn5(true);
-		}else if(this.envio.getNomeBase().equals(NomeBase.TERCEIRA_BASE)){
+			carregarSegundaBase();
+		}else if(this.envio.getNomeBase().equals("TERCEIRA")){
 			setBtn1(true);
 			setBtn2(true);
 			setBtn3(false);
 			setBtn4(true);
 			setBtn5(true);
-		}else if(this.envio.getNomeBase().equals(NomeBase.QUARTA_BASE)){
+			carregarTerceiraBase();
+		}else if(this.envio.getNomeBase().equals("QUARTA")){
 			setBtn1(true);
 			setBtn2(true);
 			setBtn3(true);
 			setBtn4(false);
 			setBtn5(true);
-		}else if(this.envio.getNomeBase().equals(NomeBase.QUINTA_BASE)){
+			carregarQuartaBase();
+		}else if(this.envio.getNomeBase().equals("QUINTA")){
 			setBtn1(true);
 			setBtn2(true);
 			setBtn3(true);
 			setBtn4(true);
 			setBtn5(false);
+			carregarQuintaBase();
 		}
 	}
 }

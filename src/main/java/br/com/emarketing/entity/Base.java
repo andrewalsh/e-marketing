@@ -3,20 +3,20 @@ package br.com.emarketing.entity;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 
-import br.com.emarketing.bean.NomeBase;
 
 @SuppressWarnings("serial")
 @Entity
+@NamedQuery(name="Base.listar",query="from Base b")
+
 public class Base implements Serializable{
 
 	private long idBase;
-	private NomeBase email;
+	private String email;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -26,11 +26,10 @@ public class Base implements Serializable{
 	public void setIdBase(long idBase) {
 		this.idBase = idBase;
 	}
-	@Enumerated(EnumType.STRING)
-	public NomeBase getEmail() {
+	public String getEmail() {
 		return email;
 	}
-	public void setEmail(NomeBase email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 	@Override
