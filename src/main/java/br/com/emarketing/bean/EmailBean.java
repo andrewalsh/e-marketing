@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -52,11 +51,8 @@ public class EmailBean implements Serializable {
 	private List<QuartaBase> quartaBase;
 	private List<QuintaBase> quintaBase;
 	private List<ControleDeEnvio> envios;
-	private boolean btn1;
-	private boolean btn2;
-	private boolean btn3;
-	private boolean btn4;
-	private boolean btn5;
+	private String assunto;
+	private String mensagem;
 	private String base;
 	private String caminho;
 	
@@ -120,46 +116,6 @@ public class EmailBean implements Serializable {
 		this.envios = envios;
 	}
 
-	public boolean isBtn1() {
-		return btn1;
-	}
-
-	public void setBtn1(boolean btn1) {
-		this.btn1 = btn1;
-	}
-
-	public boolean isBtn2() {
-		return btn2;
-	}
-
-	public void setBtn2(boolean btn2) {
-		this.btn2 = btn2;
-	}
-
-	public boolean isBtn3() {
-		return btn3;
-	}
-
-	public void setBtn3(boolean btn3) {
-		this.btn3 = btn3;
-	}
-
-	public boolean isBtn4() {
-		return btn4;
-	}
-
-	public void setBtn4(boolean btn4) {
-		this.btn4 = btn4;
-	}
-
-	public boolean isBtn5() {
-		return btn5;
-	}
-
-	public void setBtn5(boolean btn5) {
-		this.btn5 = btn5;
-	}
-
 	public String getBase() {
 		return base;
 	}
@@ -168,11 +124,26 @@ public class EmailBean implements Serializable {
 		this.base = base;
 	}
 
+	public String getAssunto() {
+		return assunto;
+	}
+	
+	public void setAssunto(String assunto) {
+		this.assunto = assunto;
+	}
+	
+	public String getMensagem() {
+		return mensagem;
+	}
+	
+	public void setMensagem(String mensagem) {
+		this.mensagem = mensagem;
+	}
+	
 	public void listarControle() {
 		try {
 			ControleDAO dao = new ControleDAO();
 			this.envio = dao.listar();
-			habilitarEnvio();
 		} catch (RuntimeException e) {
 			FacesuUtil.msgErro("Ocorreu um erro ao carregar o controle de envio de e-mails! " + e.getMessage());
 		}
@@ -181,23 +152,19 @@ public class EmailBean implements Serializable {
 	public void eviarEmail() {
 		try {
 			ControleDAO dao = new ControleDAO();
-			this.base = "b1";
-			
-			
-			this.envio.setNomeBase("PRIMEIRA");
-			this.envio.setDataEnvio(new Date());
-			mail(this.base,this.caminho);
+			this.envio = new ControleDeEnvio();
 			dao.salvar(envio);
+			mail(this.base,this.caminho);
 		} catch (RuntimeException e) {
 			FacesuUtil.msgErro("Ocorreu um erro ao enviar os e-mails da base! ERRO: [ " + e.getMessage() + " ]");
 		}
 	}
 	
 	public void upload(FileUploadEvent evt){
-		UploadedFile arquivoUpload =  evt.getFile();
+		//UploadedFile arquivoUpload =  evt.getFile();
 		try {
 			Path arquivoTemp = Files.createTempFile(null, null);
-			Files.copy(arquivoUpload.getInputstream(), arquivoTemp, StandardCopyOption.REPLACE_EXISTING);
+			//Files.copy(arquivoUpload.getInputstream(), arquivoTemp, StandardCopyOption.REPLACE_EXISTING);
 			caminho = arquivoTemp.toAbsolutePath().toString();
 		} catch (IOException e) {
 			FacesuUtil.msgErro("Ocorreu um erro! ERRO: [ " + e.getMessage() + " ]");
@@ -250,45 +217,6 @@ public class EmailBean implements Serializable {
 		}
 	}
 
-	
-	private void habilitarEnvio() {
-		if (this.envio == null || this.envio.getNomeBase().equals("QUINTA")) {
-			setBtn1(false);
-			setBtn2(true);
-			setBtn3(true);
-			setBtn4(true);
-			setBtn5(true);
-			carregarPrimeiraBase();
-		} else if (this.envio.getNomeBase().equals("SEGUNDA")) {
-			setBtn1(true);
-			setBtn2(false);
-			setBtn3(true);
-			setBtn4(true);
-			setBtn5(true);
-			carregarSegundaBase();
-		} else if (this.envio.getNomeBase().equals("TERCEIRA")) {
-			setBtn1(true);
-			setBtn2(true);
-			setBtn3(false);
-			setBtn4(true);
-			setBtn5(true);
-			carregarTerceiraBase();
-		} else if (this.envio.getNomeBase().equals("QUARTA")) {
-			setBtn1(true);
-			setBtn2(true);
-			setBtn3(true);
-			setBtn4(false);
-			setBtn5(true);
-			carregarQuartaBase();
-		} else if (this.envio.getNomeBase().equals("QUINTA")) {
-			setBtn1(true);
-			setBtn2(true);
-			setBtn3(true);
-			setBtn4(true);
-			setBtn5(false);
-			carregarQuintaBase();
-		}
-	}
 
 	private void mail(String base, String caminho) {
 		Properties properties = new Properties();
@@ -309,10 +237,14 @@ public class EmailBean implements Serializable {
 
 		switch (base) {
 		case "b1":
+			this.envio.setNomeBase("PRIMEIRA");
+			this.envio.setDataEnvio(new Date());
+			
+			carregarPrimeiraBase();
 			//for (int i = 0; i < primeiraBase.size(); i++) {
 				try {
 					MimeMessage message = new MimeMessage(session);
-					message.setSubject("TEO - Teste de envio de e-mail");
+					message.setSubject(this.assunto);
 					message.setFrom(new InternetAddress("andre.walsh@gmail.com"));
 					message.addRecipient(Message.RecipientType.TO,
 							new InternetAddress("andre.walsh@gmail.com"));
@@ -323,11 +255,8 @@ public class EmailBean implements Serializable {
 					MimeMultipart multipart = new MimeMultipart("related");
 					// 1a parte- html
 					BodyPart messageBodyPart = new MimeBodyPart();
-					String htmlText = "<H3>18/01/2017 Teste 3 de e-mail, imagem no corpo da mensagem...</H3><br/>"
-							+ "<h3>Testando formato de imagem suportado... imagem formato JPG apresentou erro</h3><br/>"
-							+ "<h3>Adicionando outra imagem no formato PNG</h3>"
-							+ "<img src=\"cid:image\">";
-					message.setSubject("E-mail - Teste ");
+					String htmlText = "<h4>"+this.mensagem
+							+ "</h4><br/><img src=\"cid:image\">";
 					messageBodyPart.setContent(htmlText, "text/html");
 					// Adiciona
 					multipart.addBodyPart(messageBodyPart);
@@ -342,29 +271,46 @@ public class EmailBean implements Serializable {
 					// coloca tudo junto
 					message.setContent(multipart);
 
-					Transport.send(message);
+					//Transport.send(message);
 					System.out.println("Sucesso");
 				} catch (MessagingException e) {
 					System.out.println("Erro ao enviar e-mail! ERRO: [ " + e.getMessage() + " ]");
 					e.printStackTrace();
 				}
 			//}
+			try {
+				ControleDAO dao = new ControleDAO();
+				ControleDeEnvio controle = dao.listar();
+				this.envio = controle;
+				this.envio.setDataTerminoEnvio(new Date());
+				//dao.atualizar(envio);
+			} catch (RuntimeException e) {
+				FacesuUtil.msgErro("Ocorreu um erro: [ "+e.getMessage()+" ]");
+			}
 			break;
 
 		case "b2":
 			this.envio.setNomeBase("SEGUNDA");
+			this.envio.setDataEnvio(new Date());
+			carregarSegundaBase();
 			break;
 
 		case "b3":
 			this.envio.setNomeBase("TERCEIRA");
+			this.envio.setDataEnvio(new Date());
+			carregarTerceiraBase();
 			break;
 
 		case "b4":
 			this.envio.setNomeBase("QUARTA");
+			this.envio.setDataEnvio(new Date());
+			carregarQuartaBase();
 			break;
 
 		case "b5":
 			this.envio.setNomeBase("QUINTA");
+			this.envio.setDataEnvio(new Date());
+			carregarQuintaBase();
 			break;
 
 		}

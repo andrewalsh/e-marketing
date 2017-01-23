@@ -18,21 +18,28 @@
 				<h:form enctype="multipart/form-data">
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Assunto:"/>
-						<p:inputText/>
+						<p:inputText value="#{emailBean.assunto}" size="40"/>
 					
 						<p:outputLabel value="Mensagem:"/>
-						<p:inputTextarea ></p:inputTextarea>
+						<p:inputTextarea rows="10" cols="100" value="#{emailBean.mensagem}"/>
+						
+						<p:outputLabel value="Base de e-mails:"/>
+						<p:selectOneMenu value="#{emailBean.base}">
+							<f:selectItem itemLabel="Selecione..." itemValue=""/>
+							<f:selectItem itemLabel="Base 1" itemValue="b1"/>
+							<f:selectItem itemLabel="Base 2" itemValue="b2"/>
+							<f:selectItem itemLabel="Base 3" itemValue="b3"/>
+							<f:selectItem itemLabel="Base 4" itemValue="b4"/>
+							<f:selectItem itemLabel="Base 5" itemValue="b5"/>
+						</p:selectOneMenu>
 						
 						<p:outputLabel value="Imagem:"/>
 						<p:fileUpload label="Selecione..." uploadLabel="Carregar Imagem" cancelLabel="Cancelar"
 							mode="advanced" fileUploadListener="#{emailBean.upload}"/>
 					</h:panelGrid>
-					<h:panelGrid columns="5">
-						<p:commandButton value="Enviar Primeira Base" actionListener="#{emailBean.eviarEmail}" disabled="#{emailBean.btn1 eq true}"/>
-						<p:commandButton value="Enviar Segunda Base" disabled="#{emailBean.btn2 eq true}"/>
-						<p:commandButton value="Enviar Terceira Base" disabled="#{emailBean.btn3 eq true}"/>
-						<p:commandButton value="Enviar Quarta Base" disabled="#{emailBean.btn4 eq true}"/>
-						<p:commandButton value="Enviar Quinta Base" disabled="#{emailBean.btn5 eq true}"/>
+					<h:panelGrid columns="">
+						<p:commandButton value="Enviar e-mails" actionListener="#{emailBean.eviarEmail}" />
+						
 					</h:panelGrid>
 				</h:form>
 			</p:tab>

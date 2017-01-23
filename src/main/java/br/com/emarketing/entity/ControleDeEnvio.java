@@ -3,6 +3,7 @@ package br.com.emarketing.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,12 +11,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @SuppressWarnings("serial")
+@Entity
 public class ControleDeEnvio implements Serializable{
 
 	private long idControleDEEnvio;
 	private String nomeBase;
 	private Date dataEnvio;
-	
+	private Date dataTerminoEnvio;
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	public long getIdControleDEEnvio() {
@@ -37,6 +39,13 @@ public class ControleDeEnvio implements Serializable{
 	}
 	public void setDataEnvio(Date dataEnvio) {
 		this.dataEnvio = dataEnvio;
+	}
+	@Temporal(TemporalType.DATE)
+	public Date getDataTerminoEnvio() {
+		return dataTerminoEnvio;
+	}
+	public void setDataTerminoEnvio(Date dataTerminoEnvio) {
+		this.dataTerminoEnvio = dataTerminoEnvio;
 	}
 	@Override
 	public int hashCode() {
